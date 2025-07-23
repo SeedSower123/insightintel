@@ -1,0 +1,13 @@
+  <h1>Recent SEC Filings</h1>
+  <ul>
+    {% for f in filings %}
+      <li>
+        {{ f.company }} — Form: {{ f.form_type }} — Date: {{ f.filing_date }}
+        {% if f.watchlist_match %}
+          <strong style="color: red;">⚠️ On Watchlist</strong>
+        {% endif %}
+      </li>
+    {% else %}
+      <li>No recent filings found.</li>
+    {% endfor %}
+  </ul>

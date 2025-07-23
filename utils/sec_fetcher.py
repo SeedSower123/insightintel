@@ -1,44 +1,31 @@
-import requests
-from bs4 import BeautifulSoup
+# utils/sec_fetcher.py
 
-BASE_URL = "https://www.sec.gov"
-HEADERS = {
-    "User-Agent": "InsightIntelApp/1.0 (you@example.com)",
-    "Accept-Encoding": "gzip, deflate",
-    "Host": "www.sec.gov"
-}
+from utils.watchlist import get_watchlist
 
-def fetch_recent_filings(form_types=["D", "S-1"], count=25):
-    feed_url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent"
-    response = requests.get(feed_url, headers=HEADERS)
+def fetch_recent_filings():
+    """
+    Simulated fetch of recent SEC filings.
+    In a real app, replace this with actual SEC EDGAR API calls or scraping logic.
 
-    soup = BeautifulSoup(response.content, "html.parser")
-    rows = soup.find_all("tr")[1:]  # Skip table header
+    Returns:
+        List of filings with watchlist matching flag.
+    """
 
-    results = []
+    # Example dummy filings data
+    filings = [
+        {"company": "Acme Corp", "form_type": "D", "filing_date": "2025-07-22"},
+        {"company": "BetaWorks", "form_type": "S-1", "filing_date": "2025-07-20"},
+        {"company": "OtherCo", "form_type": "D", "filing_date": "2025-07-19"},
+        {"company": "Alphabet Inc", "form_type": "S-1", "filing_date": "2025-07-18"},
+        {"company": "ZenTech Ventures", "form_type": "D", "filing_date": "2025-07-15"},
+    ]
 
-    for row in rows:
-        cols = row.find_all("td")
-        if len(cols) < 4:
-            continue
+    watchlist = get_watchlist()
 
-        form_type = cols[0].text.strip()
-        if form_type not in form_types:
-            continue
+    # Flag filings that match any watchlist entries (case insensitive substring match)
+    for filing in filings:
+        filing["watchlist_match"] = any(
+            wl_name.lower() in filing["company"].lower() for wl_name in watchlist
+        )
 
-        company_name = cols[1].text.strip()
-        filing_href = cols[1].find("a")["href"]
-        filing_url = BASE_URL + filing_href
-        filing_date = cols[3].text.strip()
-
-        results.append({
-            "form_type": form_type,
-            "company": company_name,
-            "date": filing_date,
-            "url": filing_url
-        })
-
-        if len(results) >= count:
-            break
-
-    return results
+    return filings
