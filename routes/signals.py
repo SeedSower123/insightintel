@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, jsonify
 from utils.daloopa_match import get_daloopa_matches
-
 signals_bp = Blueprint('signals', __name__, url_prefix='/signals')
 
 @signals_bp.route('/')
