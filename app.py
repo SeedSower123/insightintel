@@ -1,8 +1,12 @@
 import os
 from flask import Flask, redirect, session
 from flask_session import Session
+app = Flask(__name__)
 
 # Import Blueprints
+from routes.watchlist import watchlist_bp
+
+app.register_blueprint(watchlist_bp)
 from routes.dashboard import dashboard_bp
 from routes.signals import signals_bp
 from routes.about import about_bp
