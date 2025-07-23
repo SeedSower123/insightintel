@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from utils.daloopa_match import get_daloopa_matches
+from utils import get_daloopa_matches
 
 dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
