@@ -1,24 +1,51 @@
 {% extends "layout.html" %}
 {% block content %}
-  <h1>Signals API</h1>
-  <p>JSON auto-refresh below every 5 seconds:</p>
-  <pre id="jsonBox">Loading...</pre>
+  <h1>Signals</h1>
+  <input type="text" id="searchBox" placeholder="Search companies..." style="margin-bottom: 1em; padding: 0.5em; width: 100%; max-width: 400px;">
+
+  <table id="signalsTable" border="1" cellpadding="10" cellspacing="0" style="width: 100%; max-width: 600px; border-collapse: collapse;">
+    <thead style="background-color: #222; color: white;">
+      <tr>
+        <th>Company</th>
+        <th>Signal Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="2">Loading signals...</td></tr>
+    </tbody>
+  </table>
 
   <script>
-    async function fetchSignals() {
-      try {
-        const res = await fetch('/signals/data');
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const data = await res.json();
-        document.getElementById('jsonBox').textContent = JSON.stringify(data, null, 2);
-      } catch (error) {
-        document.getElementById('jsonBox').textContent = `Error: ${error.message}`;
+    async function loadSignals() {
+      const res = await fetch('/signals/data');
+      const data = await res.json();
+      const tbody = document.querySelector('#signalsTable tbody');
+      tbody.innerHTML = '';
+
+      if (data.signals.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="2">No signals found.</td></tr>';
+        return;
       }
+
+      data.signals.forEach(signal => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${signal.company}</td><td>${signal.signal_score}</td>`;
+        tbody.appendChild(tr);
+      });
     }
 
-    fetchSignals();
-    setInterval(fetchSignals, 5000);
+    function filterTable() {
+      const input = document.getElementById('searchBox').value.toLowerCase();
+      const rows = document.querySelectorAll('#signalsTable tbody tr');
+
+      rows.forEach(row => {
+        const company = row.cells[0].textContent.toLowerCase();
+        row.style.display = company.includes(input) ? '' : 'none';
+      });
+    }
+
+    document.getElementById('searchBox').addEventListener('input', filterTable);
+
+    loadSignals();
   </script>
 {% endblock %}
