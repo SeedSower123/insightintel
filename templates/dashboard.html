@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h1>Dashboard</h1>
+  {% if signals %}
+    <ul>
+      {% for s in signals %}
+        <li>
+          {{ s.company }} — Score: {{ s.signal_score }}
+          {% if s.company not in watchlist %}
+            <a href="{{ url_for('dashboard.add_to_watchlist', company=s.company) }}">[+ Watch]</a>
+          {% else %}
+            <span>✓ In Watchlist</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No signals available.</p>
+  {% endif %}
+
+  <h2>Your Watchlist</h2>
+  {% if watchlist %}
+    <ul>
+      {% for c in watchlist %}
+        <li>{{ c }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No companies in your watchlist yet.</p>
+  {% endif %}
+{% endblock %}

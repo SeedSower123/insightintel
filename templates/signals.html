@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h1>Signals API</h1>
+  <p>JSON auto-refresh below every 5 seconds:</p>
+  <pre id="jsonBox">Loading...</pre>
+
+  <script>
+    async function fetchSignals() {
+      try {
+        const res = await fetch('/signals/data');
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        document.getElementById('jsonBox').textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        document.getElementById('jsonBox').textContent = `Error: ${error.message}`;
+      }
+    }
+
+    fetchSignals();
+    setInterval(fetchSignals, 5000);
+  </script>
+{% endblock %}
