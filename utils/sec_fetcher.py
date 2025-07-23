@@ -1,11 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
-import re
 
 BASE_URL = "https://www.sec.gov"
 HEADERS = {
-    "User-Agent": "YourAppName (your@email.com)",
+    "User-Agent": "InsightIntelApp/1.0 (you@example.com)",
     "Accept-Encoding": "gzip, deflate",
     "Host": "www.sec.gov"
 }
@@ -44,11 +42,3 @@ def fetch_recent_filings(form_types=["D", "S-1"], count=25):
             break
 
     return results
-
-
-if __name__ == "__main__":
-    filings = fetch_recent_filings()
-    for filing in filings:
-        print(f"{filing['date']} — [{filing['form_type']}] {filing['company']}")
-        print(f"URL: {filing['url']}")
-        print("-" * 60)
