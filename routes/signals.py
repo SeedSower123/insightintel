@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, jsonify
-from utils import get_daloopa_matches
 signals_bp = Blueprint('signals', __name__, url_prefix='/signals')
 
 @signals_bp.route('/')
@@ -8,4 +7,4 @@ def index():
 
 @signals_bp.route('/data')
 def data():
-    return jsonify(signals=get_daloopa_matches())
+    return jsonify(signals=[])
