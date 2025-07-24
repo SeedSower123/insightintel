@@ -3,9 +3,9 @@
 WATCHLIST = [
     "Acme Corp",
     "Alphabet Inc",
-    "Jane Doe",
     "BetaWorks",
-    "ZenTech Ventures"
+    "Jane Doe",
+    "ZenTech"
 ]
 
 def get_watchlist():

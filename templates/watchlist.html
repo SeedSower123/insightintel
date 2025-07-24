@@ -1,37 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
-  <h1>Watchlist Management</h1>
+  <h1>Watchlist</h1>
 
   <form action="{{ url_for('watchlist.add') }}" method="POST">
-    <input type="text" name="name" placeholder="Add name to watchlist" required>
+    <input type="text" name="name" placeholder="Add name..." required>
     <button type="submit">Add</button>
   </form>
 
-  <h2>Current Watchlist</h2>
-  {% if watchlist %}
-    <ul>
-      {% for name in watchlist %}
-        <li>
-          {{ name }}
-          <form action="{{ url_for('watchlist.remove') }}" method="POST" style="display:inline;">
-            <input type="hidden" name="name" value="{{ name }}">
-            <button type="submit">Remove</button>
-          </form>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No entries in watchlist.</p>
-  {% endif %}
-
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <ul class="flashes">
-        {% for category, message in messages %}
-          <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-
+  <ul>
+    {% for name in watchlist %}
+      <li>
+        {{ name }}
+        <form action="{{ url_for('watchlist.remove') }}" method="POST" style="display:inline;">
+          <input type="hidden" name="name" value="{{ name }}">
+          <button type="submit">Remove</button>
+        </form>
+      </li>
+    {% else %}
+      <li>No items in watchlist.</li>
+    {% endfor %}
+  </ul>
 {% endblock %}

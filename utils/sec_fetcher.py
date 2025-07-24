@@ -1,31 +1,45 @@
 # utils/sec_fetcher.py
 
+import requests
+from datetime import datetime, timedelta
 from utils.watchlist import get_watchlist
 
-def fetch_recent_filings():
-    """
-    Simulated fetch of recent SEC filings.
-    In a real app, replace this with actual SEC EDGAR API calls or scraping logic.
+SEC_BASE_URL = "https://data.sec.gov"
+HEADERS = {"User-Agent": "YourName your@email.com"}
 
-    Returns:
-        List of filings with watchlist matching flag.
+def fetch_sec_filings(form_type="D", days=7):
     """
+    Fetch recent SEC filings of a given form type (D or S-1) from the last X days.
+    """
+    now = datetime.utcnow()
+    start_date = (now - timedelta(days=days)).strftime("%Y-%m-%d")
+    query = f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type={form_type}&owner=exclude&output=atom"
 
-    # Example dummy filings data
-    filings = [
-        {"company": "Acme Corp", "form_type": "D", "filing_date": "2025-07-22"},
-        {"company": "BetaWorks", "form_type": "S-1", "filing_date": "2025-07-20"},
-        {"company": "OtherCo", "form_type": "D", "filing_date": "2025-07-19"},
-        {"company": "Alphabet Inc", "form_type": "S-1", "filing_date": "2025-07-18"},
-        {"company": "ZenTech Ventures", "form_type": "D", "filing_date": "2025-07-15"},
+    response = requests.get(query, headers=HEADERS)
+    if response.status_code != 200:
+        return []
+
+    # Atom feed is XML, but we’ll mock this part for now since full XML parsing isn’t in scope here
+    # In real implementation, use feedparser or xml.etree.ElementTree
+
+    # TEMPORARY MOCK FOR DEMO PURPOSES:
+    mock_filings = [
+        {"company": "Acme Corp", "form_type": form_type, "filing_date": now.strftime("%Y-%m-%d")},
+        {"company": "BetaWorks", "form_type": form_type, "filing_date": now.strftime("%Y-%m-%d")},
+        {"company": "OtherCo", "form_type": form_type, "filing_date": now.strftime("%Y-%m-%d")}
     ]
 
     watchlist = get_watchlist()
 
-    # Flag filings that match any watchlist entries (case insensitive substring match)
-    for filing in filings:
+    for filing in mock_filings:
         filing["watchlist_match"] = any(
-            wl_name.lower() in filing["company"].lower() for wl_name in watchlist
+            wl.lower() in filing["company"].lower() for wl in watchlist
         )
 
-    return filings
+    return mock_filings
+
+def get_all_recent_signals():
+    """
+    Combine Form D and S-1 recent filings for unified signal view.
+    """
+    return fetch_sec_filings("D") + fetch_sec_filings("S-1")

@@ -7,6 +7,8 @@ from routes.signals import signals_bp
 from routes.about import about_bp
 from routes.watchlist import watchlist_bp
 from routes.sec import sec_bp
+from routes.signals import signals_bp
+from routes.watchlist import watchlist_bp
 
 app = Flask(__name__)
 
@@ -22,6 +24,8 @@ app.register_blueprint(signals_bp)
 app.register_blueprint(about_bp)
 app.register_blueprint(watchlist_bp)
 app.register_blueprint(sec_bp)
+app.register_blueprint(signals_bp)
+app.register_blueprint(watchlist_bp)
 
 # Redirect root URL to dashboard
 @app.route('/')

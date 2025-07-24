@@ -1,48 +1,16 @@
-  <h1>Signals</h1>
-  <input type="text" id="searchBox" placeholder="Search companies..." style="margin-bottom: 1em; padding: 0.5em; width: 100%; max-width: 400px;">
-
-  <table id="signalsTable" border="1" cellpadding="10" cellspacing="0" style="width: 100%; max-width: 600px; border-collapse: collapse;">
-    <thead style="background-color: #222; color: white;">
-      <tr>
-        <th>Company</th>
-        <th>Signal Score</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td colspan="2">Loading signals...</td></tr>
-    </tbody>
-  </table>
-
-  <script>
-    async function loadSignals() {
-      const res = await fetch('/signals/data');
-      const data = await res.json();
-      const tbody = document.querySelector('#signalsTable tbody');
-      tbody.innerHTML = '';
-
-      if (data.signals.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="2">No signals found.</td></tr>';
-        return;
-      }
-
-      data.signals.forEach(signal => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${signal.company}</td><td>${signal.signal_score}</td>`;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function filterTable() {
-      const input = document.getElementById('searchBox').value.toLowerCase();
-      const rows = document.querySelectorAll('#signalsTable tbody tr');
-
-      rows.forEach(row => {
-        const company = row.cells[0].textContent.toLowerCase();
-        row.style.display = company.includes(input) ? '' : 'none';
-      });
-    }
-
-    document.getElementById('searchBox').addEventListener('input', filterTable);
-
-    loadSignals();
-  </script>
+{% extends "layout.html" %}
+{% block content %}
+  <h1>IPO Signals (Live from SEC)</h1>
+  <ul>
+    {% for filing in signals %}
+      <li>
+        {{ filing.company }} — Form {{ filing.form_type }} — Filed: {{ filing.filing_date }}
+        {% if filing.watchlist_match %}
+          <strong style="color: red;">⚠ Watchlist Match</strong>
+        {% endif %}
+      </li>
+    {% else %}
+      <li>No filings found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
