@@ -2,7 +2,7 @@
 
 import requests
 from datetime import datetime, timedelta
-from utils.watchlist import get_watchlist
+from routes.watchlist2 import get_watchlist
 
 SEC_BASE_URL = "https://data.sec.gov"
 HEADERS = {"User-Agent": "YourName your@email.com"}
